@@ -1,51 +1,92 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Doce Futuro | Cupcakes Artesanais</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body class="bg-light">
-
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
-    <div class="container">
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="bg-light">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+      <div class="container">
         <a class="navbar-brand fw-bold" href="/">🧁 Doce Futuro</a>
-        <div class="d-flex gap-2">
-            <a href="/login" class="btn btn-outline-light btn-sm">Entrar / Cadastrar</a>
-            <a href="/carrinho" class="btn btn-warning btn-sm fw-bold">Carrinho (0)</a>
+        <div class="d-flex align-items-center gap-2">
+          {% if session.get('cliente_nome') %}
+          <span class="text-light small me-2"
+            >Olá, <strong>{{ session['cliente_nome'] }}</strong></span
+          >
+          <a href="/logout" class="btn btn-outline-secondary btn-sm">Sair</a>
+          {% else %}
+          <a href="/login" class="btn btn-outline-light btn-sm"
+            >Entrar / Cadastrar</a
+          >
+          {% endif %}
+          <a href="/carrinho" class="btn btn-warning btn-sm fw-bold">
+            Carrinho ({{ session.get('carrinho', {})|length }})
+          </a>
         </div>
-    </div>
-</nav>
+      </div>
+    </nav>
 
-<div class="container">
-    <div class="p-4 mb-4 bg-white rounded-3 shadow-sm border-start border-4 border-warning">
+    <div class="container">
+      <div
+        class="p-4 mb-4 bg-white rounded-3 shadow-sm border-start border-4 border-warning"
+      >
         <h1 class="h3 fw-bold">Nossa Nova Vitrine</h1>
-        <p class="text-muted mb-0">Pedidos frescos, rastreio transparente em tempo real e entrega garantida.</p>
-    </div>
+        <p class="text-muted mb-0">
+          Pedidos frescos, rastreio transparente em tempo real e entrega
+          garantida.
+        </p>
+      </div>
 
-    <div class="row g-4">
+      <div class="row g-4">
         {% for item in cupcakes %}
         <div class="col-md-6 col-lg-3">
-            <div class="card h-100 shadow-sm border-0">
-                <div class="card-body d-flex flex-column">
-                    <h5 class="card-title fw-bold">{{ item.nome }}</h5>
-                    <p class="card-text text-muted small flex-grow-1">{{ item.descricao }}</p>
-                    <div class="mt-3">
-                        <p class="h5 text-success fw-bold mb-1">R$ {{ "%.2f"|format(item.preco) }}</p>
-                        <small class="text-secondary d-block mb-3">Disponível: {{ item.estoque }} un.</small>
-                        <form action="/carrinho/adicionar" method="POST" class="d-flex gap-2">
-                            <input type="hidden" name="id_cupcake" value="{{ item.id_cupcake }}">
-                            <input type="number" name="quantidade" value="1" min="1" max="{{ item.estoque }}" class="form-control form-control-sm" style="width: 70px;">
-                            <button type="submit" class="btn btn-dark btn-sm w-100">Adicionar</button>
-                        </form>
-                    </div>
-                </div>
+          <div class="card h-100 shadow-sm border-0">
+            <div class="card-body d-flex flex-column">
+              <h5 class="card-title fw-bold">{{ item.nome }}</h5>
+              <p class="card-text text-muted small flex-grow-1">
+                {{ item.descricao }}
+              </p>
+              <div class="mt-3">
+                <p class="h5 text-success fw-bold mb-1">
+                  R$ {{ "%.2f"|format(item.preco) }}
+                </p>
+                <small class="text-secondary d-block mb-3"
+                  >Disponível: {{ item.estoque }} un.</small
+                >
+                <form
+                  action="/carrinho/adicionar"
+                  method="POST"
+                  class="d-flex gap-2"
+                >
+                  <input
+                    type="hidden"
+                    name="id_cupcake"
+                    value="{{ item.id_cupcake }}"
+                  />
+                  <input
+                    type="number"
+                    name="quantidade"
+                    value="1"
+                    min="1"
+                    max="{{ item.estoque }}"
+                    class="form-control form-control-sm"
+                    style="width: 70px"
+                  />
+                  <button type="submit" class="btn btn-dark btn-sm w-100">
+                    Adicionar
+                  </button>
+                </form>
+              </div>
             </div>
+          </div>
         </div>
         {% endfor %}
+      </div>
     </div>
-</div>
-
-</body>
+  </body>
 </html>
