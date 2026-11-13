@@ -23,7 +23,6 @@ def adicionar():
         
         carrinho = session['carrinho']
         
-        # Se o cupcake já está no carrinho, apenas soma a quantidade
         if id_cupcake in carrinho:
             carrinho[id_cupcake]['quantidade'] += quantidade
         else:

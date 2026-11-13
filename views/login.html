@@ -77,16 +77,21 @@
                     class="form-control"
                     required
                   />
-                </div>
                 <div class="mb-3">
-                  <label class="form-label">Telefone / WhatsApp</label>
-                  <input
-                    type="text"
-                    name="telefone"
-                    class="form-control"
-                    placeholder="(11) 99999-9999"
-                    required
-                  />
+                  <label for="telefone" class="form-label">Telefone / WhatsApp</label>
+                    <input 
+                      type="text" 
+                      class="form-control" 
+                      id="telefone" 
+                      name="telefone" 
+                      inputmode="numeric" 
+                      pattern="[0-9]{11}" 
+                      maxlength="11" 
+                      placeholder="Ex: 11988887777" 
+                      required 
+                      title="Digite exatamente 11 números (com DDD)"
+                      >
+                    <div class="form-text">Apenas números (DDD + 9 dígitos).</div>
                 </div>
                 <div class="mb-3">
                   <label class="form-label">Senha</label>

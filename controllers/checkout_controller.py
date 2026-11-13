@@ -1,23 +1,42 @@
-from flask import Blueprint, render_template, redirect, url_for, session, flash
+from flask import Blueprint, render_template, request, redirect, url_for, session, flash
 from models.pedido_model import PedidoModel
 
 checkout_bp = Blueprint('checkout', __name__)
 
-@checkout_bp.route('/checkout')
-def finalizar_compra():
-    # Verifica se o usuário está logado
+@checkout_bp.route('/checkout', methods=['GET'])
+def index():
     if 'cliente_id' not in session:
-        flash('Faça login ou cadastre-se para finalizar sua compra.', 'warning')
+        flash('Faça login ou cadastre-se para prosseguir com o checkout.', 'warning')
         return redirect(url_for('auth.login'))
         
     carrinho = session.get('carrinho', {})
     if not carrinho:
         return redirect(url_for('vitrine.index'))
         
-    # Calcula o total
+    total = sum(item['preco'] * item['quantidade'] for item in carrinho.values())
+    return render_template('checkout.html', carrinho=carrinho, total=total)
+
+@checkout_bp.route('/checkout/finalizar', methods=['POST'])
+def finalizar():
+    if 'cliente_id' not in session:
+        return redirect(url_for('auth.login'))
+        
+    carrinho = session.get('carrinho', {})
+    if not carrinho:
+        return redirect(url_for('vitrine.index'))
+        
+    cep = request.form.get('cep')
+    logradouro = request.form.get('logradouro')
+    numero = request.form.get('numero')
+    complemento = request.form.get('complemento', '') 
+    pagamento = request.form.get('pagamento')
+    
+    if not cep or not logradouro or not numero or not pagamento:
+        flash('Preencha todos os dados obrigatórios de entrega e pagamento.', 'danger')
+        return redirect(url_for('checkout.index'))
+        
     total = sum(item['preco'] * item['quantidade'] for item in carrinho.values())
     
-    # Prepara a lista de itens iterando pelo dicionário da sessão
     itens = []
     for id_cupcake, dados in carrinho.items():
         itens.append({
@@ -26,10 +45,8 @@ def finalizar_compra():
             'preco_unitario': dados['preco']
         })
         
-    # Registra no MySQL
-    PedidoModel.criar(session['cliente_id'], total, itens)
+    PedidoModel.criar(session['cliente_id'], total, itens, cep, logradouro, numero, complemento, pagamento)
     
-    # Esvazia o carrinho após a compra
     session.pop('carrinho', None)
     flash('Pedido realizado com sucesso!', 'success')
     

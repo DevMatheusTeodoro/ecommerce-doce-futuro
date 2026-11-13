@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Checkout | Doce Futuro</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
+  </head>
+  <body class="bg-light">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+      <div class="container">
+        <a class="navbar-brand fw-bold" href="/">🧁 Doce Futuro</a>
+        <a href="/carrinho" class="btn btn-outline-light btn-sm"
+          >Voltar ao Carrinho</a
+        >
+      </div>
+    </nav>
+
+    <div class="container my-4">
+      <h2 class="fw-bold mb-4">Finalizar Pedido</h2>
+
+      <form action="/checkout/finalizar" method="POST">
+        <div class="row g-4">
+          <!-- COLUNA DA ESQUERDA (7 colunas): Endereço e Pagamento -->
+          <div class="col-lg-7">
+            <!-- Cartão de Endereço -->
+            <div class="card shadow-sm border-0 p-4 mb-4 card-produto">
+              <h5 class="fw-bold mb-3 text-secondary">
+                📍 Endereço de Entrega
+              </h5>
+              <div class="row g-3">
+                <!-- CEP: Exatamente 8 números -->
+                <div class="col-md-4">
+                  <label for="cep" class="form-label fw-semibold">CEP</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="cep"
+                    name="cep"
+                    inputmode="numeric"
+                    pattern="[0-9]{8}"
+                    maxlength="8"
+                    placeholder="12345678"
+                    required
+                    title="Digite exatamente 8 números"
+                  />
+                </div>
+
+                <!-- Logradouro -->
+                <div class="col-md-8">
+                  <label for="logradouro" class="form-label fw-semibold"
+                    >Logradouro</label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="logradouro"
+                    name="logradouro"
+                    placeholder="Ex: Rua das Flores"
+                    required
+                  />
+                </div>
+
+                <!-- Número: Até 8 números -->
+                <div class="col-md-4">
+                  <label for="numero" class="form-label fw-semibold"
+                    >Número</label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="numero"
+                    name="numero"
+                    inputmode="numeric"
+                    pattern="[0-9]{1,8}"
+                    maxlength="8"
+                    placeholder="Ex: 123"
+                    required
+                    title="Digite até 8 dígitos numéricos"
+                  />
+                </div>
+
+                <!-- Complemento (Opcional) -->
+                <div class="col-md-8">
+                  <label for="complemento" class="form-label fw-semibold"
+                    >Complemento
+                    <span class="text-muted fw-normal">(Opcional)</span></label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="complemento"
+                    name="complemento"
+                    placeholder="Ex: Apto 42, Bloco B"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <!-- Cartão de Pagamento -->
+            <div class="card shadow-sm border-0 p-4 card-produto">
+              <h5 class="fw-bold mb-3 text-secondary">
+                💳 Método de Pagamento
+              </h5>
+              <div class="d-flex flex-column gap-3">
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="radio"
+                    name="pagamento"
+                    id="pag_pix"
+                    value="PIX"
+                    required
+                  />
+                  <label class="form-check-label fw-semibold" for="pag_pix">
+                    PIX (Aprovação imediata)
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="radio"
+                    name="pagamento"
+                    id="pag_cartao"
+                    value="Cartao de Credito"
+                  />
+                  <label class="form-check-label fw-semibold" for="pag_cartao">
+                    Cartão de Crédito
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- COLUNA DA DIREITA (5 colunas): Resumo do Pedido e Botão -->
+          <div class="col-lg-5">
+            <div
+              class="card shadow-sm border-0 p-4 card-produto sticky-top"
+              style="top: 2rem"
+            >
+              <h5 class="fw-bold mb-3">Resumo da Compra</h5>
+              <ul class="list-group list-group-flush mb-3">
+                {% for id, item in carrinho.items() %}
+                <li
+                  class="list-group-item d-flex justify-content-between align-items-center px-0 bg-transparent"
+                >
+                  <div>
+                    <h6 class="mb-0 fw-semibold">{{ item.nome }}</h6>
+                    <small class="text-muted"
+                      >{{ item.quantidade }}x R$ {{ "%.2f"|format(item.preco)
+                      }}</small
+                    >
+                  </div>
+                  <span class="fw-bold"
+                    >R$ {{ "%.2f"|format(item.preco * item.quantidade) }}</span
+                  >
+                </li>
+                {% endfor %}
+              </ul>
+              <div
+                class="d-flex justify-content-between align-items-center border-top pt-3 mb-4"
+              >
+                <span class="h5 mb-0">Total:</span>
+                <span class="h4 text-success fw-bold mb-0"
+                  >R$ {{ "%.2f"|format(total) }}</span
+                >
+              </div>
+              <button
+                type="submit"
+                class="btn btn-warning w-100 py-3 fw-bold text-dark shadow-sm"
+              >
+                Confirmar e Concluir Pedido
+              </button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </body>
+</html>

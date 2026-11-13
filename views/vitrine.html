@@ -22,10 +22,10 @@
           <span class="text-light fw-semibold me-2"
             >Olá, {{ session['cliente_nome'] }}</span
           >
+          <a href="/logout" class="btn btn-outline-danger btn-sm">Sair</a>
           <a href="/rastreio" class="btn btn-outline-light btn-sm"
             >Meus Pedidos</a
           >
-          <a href="/logout" class="btn btn-outline-danger btn-sm">Sair</a>
           {% else %}
           <a href="/login" class="btn btn-outline-light">Entrar / Cadastrar</a>
           {% endif %}

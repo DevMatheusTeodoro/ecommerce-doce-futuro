@@ -14,7 +14,7 @@ class ClienteModel:
             conexao.commit()
             return cursor.lastrowid
         except mysql.connector.IntegrityError:
-            return None  # Retorna None se o e-mail já existir
+            return None 
         finally:
             cursor.close()
             conexao.close()

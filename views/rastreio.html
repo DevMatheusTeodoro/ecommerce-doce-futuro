@@ -1,57 +1,81 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Meus Pedidos | Doce Futuro</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body class="bg-light">
-
-<nav class="navbar navbar-dark bg-dark mb-5">
-    <div class="container">
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
+  </head>
+  <body class="bg-light">
+    <nav class="navbar navbar-dark bg-dark mb-5">
+      <div class="container">
         <a class="navbar-brand fw-bold" href="/">🧁 Doce Futuro</a>
-        <div class="d-flex gap-2">
-            <span class="navbar-text text-light me-3">Olá, {{ session['cliente_nome'] }}</span>
-            <a href="/" class="btn btn-outline-light btn-sm">Voltar à Vitrine</a>
+        <div class="d-flex align-items-center gap-3">
+          <span class="navbar-text text-light me-2"
+            >Olá, {{ session['cliente_nome'] }}</span
+          >
+          <a href="/" class="btn btn-outline-light btn-sm">Voltar à Vitrine</a>
         </div>
-    </div>
-</nav>
+      </div>
+    </nav>
 
-<div class="container">
-    <h2 class="fw-bold mb-4">Rastreio de Pedidos</h2>
+    <div class="container">
+      <h2 class="fw-bold mb-4">Meus Pedidos & Rastreio</h2>
 
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            {% for category, message in messages %}
-                <div class="alert alert-{{ category }}">{{ message }}</div>
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
+      {% if pedidos %}
+      <div class="row g-4">
+        {% for pedido in pedidos %}
+        <div class="col-md-6">
+          <div
+            class="card shadow-sm border-0 border-start border-4 border-warning h-100 card-produto"
+          >
+            <div class="card-body p-4">
+              <div
+                class="d-flex justify-content-between align-items-center mb-3"
+              >
+                <h5 class="fw-bold mb-0">Pedido #00{{ pedido.id_pedido }}</h5>
+                <span class="badge bg-dark fs-6">{{ pedido.status }}</span>
+              </div>
 
-    {% if pedidos %}
-        <div class="row g-4">
-            {% for pedido in pedidos %}
-            <div class="col-md-6">
-                <div class="card shadow-sm border-0 border-start border-4 border-warning h-100">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h5 class="fw-bold mb-0">Pedido #00{{ pedido.id_pedido }}</h5>
-                            <span class="badge bg-dark fs-6">{{ pedido.status }}</span>
-                        </div>
-                        <p class="mb-1 text-muted">Total pago:</p>
-                        <h4 class="text-success fw-bold">R$ {{ "%.2f"|format(pedido.valor_total) }}</h4>
-                    </div>
-                </div>
+              <p class="text-muted mb-1">
+                <strong>Endereço de Entrega:</strong>
+                {{ pedido.logradouro }}, {{ pedido.numero }} {% if
+                pedido.complemento %} - {{ pedido.complemento }} {% endif %}
+                (CEP: {{ pedido.cep }})
+              </p>
+              <p class="text-muted mb-3">
+                <strong>Forma de Pagamento:</strong> {{ pedido.pagamento }}
+              </p>
+
+              <div
+                class="d-flex justify-content-between align-items-center border-top pt-3"
+              >
+                <span class="text-muted">Total pago:</span>
+                <h4 class="text-success fw-bold mb-0">
+                  R$ {{ "%.2f"|format(pedido.valor_total) }}
+                </h4>
+              </div>
             </div>
-            {% endfor %}
+          </div>
         </div>
-    {% else %}
-        <div class="alert alert-secondary text-center py-5">
-            Você ainda não fez nenhum pedido.
-        </div>
-    {% endif %}
-</div>
-
-</body>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="alert alert-secondary text-center py-5 shadow-sm border-0">
+        <h4 class="fw-bold mb-2">Nenhum pedido encontrado</h4>
+        <p class="mb-3">
+          Você ainda não concluiu nenhuma compra na nossa vitrine.
+        </p>
+        <a href="/" class="btn btn-dark px-4">Explorar Vitrine</a>
+      </div>
+      {% endif %}
+    </div>
+  </body>
 </html>

@@ -6,6 +6,8 @@ auth_bp = Blueprint('auth', __name__)
 
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
+    if '_flashes' in session:
+        session['_flashes'] = [f for f in session['_flashes'] if f[0] != 'success']
     if request.method == 'POST':
         email = request.form.get('email')
         senha = request.form.get('senha')
