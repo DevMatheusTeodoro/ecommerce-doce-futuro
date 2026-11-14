@@ -1,2 +1,2 @@
-Flask
-PyMySQL
+mysql-connector-python
+gunicorn
