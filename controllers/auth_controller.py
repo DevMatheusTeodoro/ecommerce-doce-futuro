@@ -41,4 +41,5 @@ def cadastro():
 def logout():
     session.pop('cliente_id', None)
     session.pop('cliente_nome', None)
+    session.pop('carrinho', None)
     return redirect(url_for('vitrine.index'))
