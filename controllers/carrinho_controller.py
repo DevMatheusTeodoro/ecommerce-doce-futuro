@@ -5,7 +5,6 @@ carrinho_bp = Blueprint('carrinho', __name__)
 
 @carrinho_bp.route('/carrinho')
 def index():
-    # Puxa o carrinho da sessão ou cria um dicionário vazio
     carrinho = session.get('carrinho', {})
     total = sum(item['preco'] * item['quantidade'] for item in carrinho.values())
     return render_template('carrinho.html', carrinho=carrinho, total=total)
@@ -29,13 +28,33 @@ def adicionar():
             carrinho[id_cupcake] = {
                 'nome': produto['nome'],
                 'preco': float(produto['preco']),
-                'quantidade': quantidade
+                'quantidade': quantidade,
+                'estoque': int(produto['estoque'])
             }
         
         session.modified = True
         flash(f"{produto['nome']} adicionado ao carrinho!", 'success')
         
     return redirect(url_for('vitrine.index'))
+
+@carrinho_bp.route('/carrinho/atualizar/<id_cupcake>', methods=['POST'])
+def atualizar(id_cupcake):
+    if 'carrinho' in session and id_cupcake in session['carrinho']:
+        nova_qtd = int(request.form.get('quantidade', 1))
+        produto = ProdutoModel.buscar_por_id(id_cupcake)
+
+        if nova_qtd <= 0:
+            del session['carrinho'][id_cupcake]
+        elif produto:
+            estoque_max = int(produto['estoque'])
+            session['carrinho'][id_cupcake]['quantidade'] = min(nova_qtd, estoque_max)
+            session['carrinho'][id_cupcake]['estoque'] = estoque_max
+        else:
+            session['carrinho'][id_cupcake]['quantidade'] = nova_qtd
+
+        session.modified = True
+
+    return redirect(url_for('carrinho.index'))
 
 @carrinho_bp.route('/carrinho/remover/<id_cupcake>')
 def remover(id_cupcake):
