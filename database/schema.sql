@@ -1,7 +1,7 @@
 CREATE DATABASE doce_futuro;
 USE doce_futuro;
 
--- 1. Tabelas independentes primeiro (sem Foreign Keys)
+-- 1. Tabelas independentes
 CREATE TABLE IF NOT EXISTS `cliente` (
   `id_cliente` int NOT NULL AUTO_INCREMENT,
   `nome` varchar(100) NOT NULL,
@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS `produto` (
   PRIMARY KEY (`id_cupcake`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- 2. Tabela pedido (depende de cliente)
+-- 2. Tabela Pedido
 CREATE TABLE IF NOT EXISTS `pedido` (
   `id_pedido` int NOT NULL AUTO_INCREMENT,
   `id_cliente` int NOT NULL,
@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS `pedido` (
   CONSTRAINT `pedido_ibfk_1` FOREIGN KEY (`id_cliente`) REFERENCES `cliente` (`id_cliente`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- 3. Tabelas dependentes de pedido e produto
+-- 3. Tabelas dependentes
 CREATE TABLE IF NOT EXISTS `entrega` (
   `id_entrega` int NOT NULL AUTO_INCREMENT,
   `id_pedido` int NOT NULL,
@@ -77,7 +77,7 @@ CREATE TABLE IF NOT EXISTS `pagamento` (
   CONSTRAINT `pagamento_ibfk_1` FOREIGN KEY (`id_pedido`) REFERENCES `pedido` (`id_pedido`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- 4. Popular a vitrine com os 4 cupcakes iniciais
+-- 4. Inserir os 4 cupcakes iniciais
 INSERT INTO `produto` (`nome`, `descricao`, `preco`, `estoque`, `imagem`) VALUES
 ('Cupcake Chocolate Belga', 'Massa fofinha de cacau 70% com cobertura cremosa de ganache de chocolate belga.', 12.90, 20, 'belga.png'),
 ('Cupcake Torta de Limão', 'Massa cítrica suave recheada com creme de limão siciliano e merengue maçaricado.', 11.50, 20, 'lemon.png'),
