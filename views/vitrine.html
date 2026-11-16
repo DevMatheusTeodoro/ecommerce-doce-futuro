@@ -74,7 +74,7 @@
                 <form
                   action="/carrinho/adicionar"
                   method="POST"
-                  class="d-flex gap-2"
+                  class="d-flex gap-2 form-adicionar"
                 >
                   <input
                     type="hidden"
@@ -90,7 +90,10 @@
                     class="form-control form-control-sm"
                     style="width: 70px"
                   />
-                  <button type="submit" class="btn btn-dark btn-sm w-100">
+                  <button
+                    type="submit"
+                    class="btn btn-dark btn-sm w-100 btn-adicionar"
+                  >
                     Adicionar
                   </button>
                 </form>
@@ -101,5 +104,22 @@
         {% endfor %}
       </div>
     </div>
+
+    <script>
+      document.querySelectorAll(".form-adicionar").forEach((form) => {
+        form.addEventListener("submit", function (e) {
+          e.preventDefault();
+          const btn = this.querySelector(".btn-adicionar");
+          btn.textContent = "Adicionado!";
+          btn.classList.remove("btn-dark");
+          btn.classList.add("btn-success");
+          btn.disabled = true;
+
+          setTimeout(() => {
+            this.submit();
+          }, 500);
+        });
+      });
+    </script>
   </body>
 </html>
