@@ -26,7 +26,11 @@
     <div class="container my-4">
       <h2 class="fw-bold mb-4">Finalizar Pedido</h2>
 
-      <form action="/checkout/finalizar" method="POST">
+      <form
+        action="/checkout/finalizar"
+        method="POST"
+        onsubmit="return confirm(`Deseja realmente confirmar e finalizar este pedido no valor total de R$ {{ '%.2f'|format(total) }}?`);"
+      >
         <div class="row g-4">
           <!-- COLUNA DA ESQUERDA (7 colunas): Endereço e Pagamento -->
           <div class="col-lg-7">
